@@ -5,12 +5,18 @@ import { UserButton, useUser } from "@clerk/nextjs";
 
 import { api } from "~/utils/api";
 
-const Home: NextPage = () => {
-  const user = useUser();
+const CreatePostWizard = () => {
+  // TODO: let's do this later
+};
 
-  const { data } = api.post.getAll.useQuery();
+const Home: NextPage = () => {
+  const { data, isLoading } = api.post.getAll.useQuery();
 
   console.log(data);
+
+  if (isLoading) return <div>loading....</div>;
+
+  if (!data) return <div>No data</div>;
 
   return (
     <>
@@ -24,13 +30,15 @@ const Home: NextPage = () => {
         <UserButton />
       </div>
 
-      <pre>{JSON.stringify(data, null, 2)}</pre>
-
-      <div className="bg-red-500">
-        {data?.map((post) => (
-          <div key={post.id}>{post.content}</div>
-        ))}
-      </div>
+      <main className="flex w-full justify-center  md:max-w-2xl">
+        <div className="text-md flex flex-col">
+          {data.map((post) => (
+            <div className="border-b border-slate-200" key={post.id}>
+              {post.content}
+            </div>
+          ))}
+        </div>
+      </main>
     </>
   );
 };
