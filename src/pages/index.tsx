@@ -6,9 +6,11 @@ import { UserButton, useUser } from "@clerk/nextjs";
 import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
   const user = useUser();
+
+  const { data } = api.post.getAll.useQuery();
+
+  console.log(data);
 
   return (
     <>
@@ -20,6 +22,14 @@ const Home: NextPage = () => {
 
       <div className="p-4">
         <UserButton />
+      </div>
+
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+
+      <div className="bg-red-500">
+        {data?.map((post) => (
+          <div key={post.id}>{post.content}</div>
+        ))}
       </div>
     </>
   );
